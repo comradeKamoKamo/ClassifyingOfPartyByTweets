@@ -1,0 +1,2 @@
+# ClassifyingOfPartyByTweets
+日本の国会議員のツイートを政党ごとに分類する教師あり学習をしてみる。
