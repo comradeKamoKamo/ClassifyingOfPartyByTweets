@@ -3,7 +3,7 @@ from janome import tokenizer, tokenfilter ,analyzer
 from pathlib import Path
 
 def main():
-    for csv in Path("rawdata/*.csv"):
+    for csv in Path("rawdata/").glob("*.csv"):
         tokenize_tweets(csv)
 
 def tokenize_tweets(party_csv):
