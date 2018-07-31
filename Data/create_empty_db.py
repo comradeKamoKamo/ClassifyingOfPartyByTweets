@@ -13,7 +13,7 @@ def main():
 def create_empty_db(name,paties):
     with sqlite3.connect(name) as con:
         c = con.cursor()
-        sql = "CREATE TABLE IF NOT EXISTS Counts (key varchar(128) primary key"
+        sql = "CREATE TABLE IF NOT EXISTS Counts (key TEXT primary key"
         for party in paties:
             sql += ", {0} integer DEFAULT 0 NOT NULL".format(party)
         sql += ")"
