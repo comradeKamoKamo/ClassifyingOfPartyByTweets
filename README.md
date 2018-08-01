@@ -7,7 +7,7 @@
 # 開発環境・ライブラリ・リポジトリ
 ## 環境
  - Python 3.5.4 | Anaconda custom (64-bit)
- - **Window 10** Home (64-bit)
+ - **Windows 10** Home (64-bit)
      - リポジトリのコードはWinでしか動かないものあり。
 ## ライブラリ
  - Janome 0.3.6
