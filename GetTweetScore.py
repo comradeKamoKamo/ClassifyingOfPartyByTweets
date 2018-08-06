@@ -1,9 +1,9 @@
 import sqlite3,csv
 from pathlib import Path
-from collections import OrderedDict
+import numpy as np
 
 class GetTweetScore:
-    def GetScore(self,tweet_csv):
+    def GetScore(self,tweet_csv,rtn_index=64):
         with tweet_csv.open("r",encoding="utf-8") as f:
             tweet = csv.DictReader(f,["surface",
                         "part_of_speech",
@@ -19,9 +19,9 @@ class GetTweetScore:
             c_nouns = con_nouns.cursor()
 
             parties = self.__get_parties()
-            scores = OrderedDict()
-            for party in parties:
-                scores[party] = 0
+
+            rtn = np.zeros([rtn_index,len(parties)],dtype=float)
+            rtn_c = 0
 
             for part in tweet:
                c = None
@@ -40,10 +40,14 @@ class GetTweetScore:
                     c.execute("SELECT * FROM Standards WHERE key='{0}'".format(rep))
                     row = c.fetchone()
                     for i in range(1,len(row)):
-                        scores[parties[i-1]] += row[i]
+                        try:
+                            rtn[rtn_c,i-1] = row[i]
+                        except IndexError:
+                            print("The number of nouns and verbs is over ",rtn_index)
+                    rtn_c += 1
             con_verbs.close()
             con_nouns.close()
-            return scores
+            return rtn
 
     def __get_parties(self):
         parties = []
