@@ -3,6 +3,13 @@ from pathlib import Path
 import numpy as np
 
 class GetTweetScore:
+
+    def __init__(self):
+        self.__con_verbs = sqlite3.connect("Data/verbs.db")
+        self.__con_nouns = sqlite3.connect("Data/nouns.db")
+        self.__c_verbs = self.__con_verbs.cursor()
+        self.__c_nouns = self.__con_nouns.cursor()
+
     def GetScore(self,tweet_csv,rtn_index=64):
         with tweet_csv.open("r",encoding="utf-8") as f:
             tweet = csv.DictReader(f,["surface",
@@ -13,10 +20,6 @@ class GetTweetScore:
                         "base_form",
                         "infl_type",
                         "infl_form"])
-            con_verbs = sqlite3.connect("Data/verbs.db")
-            con_nouns = sqlite3.connect("Data/nouns.db")
-            c_verbs = con_verbs.cursor()
-            c_nouns = con_nouns.cursor()
 
             parties = self.__get_parties()
 
@@ -26,9 +29,9 @@ class GetTweetScore:
             for part in tweet:
                c = None
                if part["part_of_speech"]=="名詞":
-                   c = c_nouns
+                   c = self.__c_nouns
                elif part["part_of_speech"]=="動詞":
-                    c = c_verbs
+                    c = self.__c_verbs
                if c != None:
                     rep = part["base_form"].replace("'","''")
                     c.execute("SELECT * FROM Counts WHERE key='{0}'".format(rep))
@@ -45,8 +48,6 @@ class GetTweetScore:
                         except IndexError:
                             print("The number of nouns and verbs is over ",rtn_index)
                     rtn_c += 1
-            con_verbs.close()
-            con_nouns.close()
             return rtn
 
     def __get_parties(self):
@@ -56,3 +57,7 @@ class GetTweetScore:
             for row in data:
                 parties.append(row["party_name"])
         return parties
+
+    def close(self):
+        self.__con_verbs.close()
+        self.__con_nouns.close()
