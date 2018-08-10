@@ -6,6 +6,9 @@ from keras import utils
 from keras.callbacks import EarlyStopping
 from keras.preprocessing.image import ImageDataGenerator
 from keras.models import model_from_json
+from sklearn.metrics import precision_recall_curve,auc,roc_curve
+from sklearn.preprocessing import label_binarize
+import matplotlib.pyplot as plt
 
 PART_SIZE = 64
 
@@ -63,6 +66,41 @@ def test(model,X_test,y_test):
     c_acc = c_acc / len(y_test)
     b_acc = b_acc / len(y_test)
     print(c_acc,b_acc)
+
+    raw_preds = model.predict(X_test)
+    preds = []
+    for raw_pred in raw_preds:
+        preds.append(np.where(raw_pred == max(raw_pred))[0][0])
+    y_test = np.array(y_test)
+    preds = np.array(preds)
+    labels = []
+    for i in range(len(parties)):
+        labels.append(i)
+    y_test = label_binarize(y_test,classes=labels)
+    preds = label_binarize(preds,classes=labels)
+    precision, recall , _ = precision_recall_curve(y_test.ravel(),preds.ravel())
+    prc_auc = auc(recall,precision)
+
+    plt.figure()
+    plt.step(recall, precision, color="b", alpha=0.2,where="post")
+    plt.fill_between(recall, precision, step="post", alpha=0.2, color="b")
+    plt.xlabel("Recall")
+    plt.ylabel("Precision")
+    plt.title("P/R (Micro Average) AUC={0}".format(prc_auc))
+    plt.show()
+
+    fpr , tpr , _ = roc_curve(y_test.ravel(),preds.ravel())
+    roc_auc = auc(fpr,tpr)
+
+    plt.figure()
+    plt.step(fpr, tpr, color="r", alpha=0.2,where="post")
+    plt.fill_between(fpr,tpr, step="post", alpha=0.2, color="r")
+    plt.xlabel("False Positive Rate")
+    plt.ylabel("True Positive Rate")
+    plt.plot([0,1],[0,1],linestyle="dashed",color="pink")
+    plt.title("ROC (Micro Average) AUC={0}".format(roc_auc))
+    plt.show()
+
     return c_acc , b_acc
  
 def build_model(part_size):
