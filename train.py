@@ -6,7 +6,7 @@ from keras import utils
 from keras.callbacks import EarlyStopping
 from keras.preprocessing.image import ImageDataGenerator
 from keras.models import model_from_json
-from sklearn.metrics import precision_recall_curve,auc,roc_curve
+from sklearn.metrics import precision_recall_curve,auc,roc_curve,confusion_matrix
 from sklearn.preprocessing import label_binarize
 import matplotlib.pyplot as plt
 
@@ -19,15 +19,14 @@ def main():
     y_train_ = utils.np_utils.to_categorical(y_train,n_classes)
     X_test , y_test = np_load("Data/test.npz")
     y_test_ = utils.np_utils.to_categorical(y_test,n_classes)
-    
     """
     model = build_model(PART_SIZE)
     model = train(model,X_train,y_train_,X_test,y_test_)
     """
-
+    
     model = load_model("model.json","model.hdf5")
     test(model,X_test,y_test)
-
+    
 
 def train(model,X_train,y_train,X_test,y_test):
     model.compile(optimizer="sgd",
@@ -73,6 +72,20 @@ def test(model,X_test,y_test):
         preds.append(np.where(raw_pred == max(raw_pred))[0][0])
     y_test = np.array(y_test)
     preds = np.array(preds)
+
+    cm = confusion_matrix(y_test,preds)
+    cm = cm.astype("float") / cm.sum(axis=1)[:, np.newaxis]
+    fig = plt.figure()
+    ax = plt.subplot()
+    cax = ax.matshow(cm, interpolation="nearest", cmap="jet")
+    fig.colorbar(cax)
+    ax.set_xticklabels([""]+parties)
+    ax.set_yticklabels([""]+parties)
+    plt.title("Normalized Confusion Matrix")
+    plt.xlabel("Predicted class")
+    plt.ylabel("True class")
+    plt.show()
+
     labels = []
     for i in range(len(parties)):
         labels.append(i)
@@ -107,8 +120,8 @@ def build_model(part_size):
     n_classes = len(get_parties())
     model = Sequential()
     model.add(Flatten(input_shape=(part_size,n_classes)))
-    model.add(Dense(512,activation="relu"))
-    model.add(Dropout(0.3))
+    model.add(Dropout(0.5))
+    model.add(Dense(32,activation="relu"))
     model.add(Dense(n_classes,activation="softmax"))
     model.summary()
     json_string = model.to_json()
