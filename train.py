@@ -10,7 +10,7 @@ from sklearn.metrics import precision_recall_curve,auc,roc_curve,confusion_matri
 from sklearn.preprocessing import label_binarize
 import matplotlib.pyplot as plt
 
-PART_SIZE = 64
+PART_SIZE = 128
 
 def main():
 
