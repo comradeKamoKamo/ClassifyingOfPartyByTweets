@@ -18,7 +18,8 @@ def load_data(mode):
         with Path("Data/{0}/{1}.txt".format(party,mode)).open("r",encoding="utf-8") as f:
             for l in f.readlines():
                 p = l.replace("\n","")
-                r = get_tweet_score.GetScore(Path(p))
+                # PART_SIZE = 128
+                r = get_tweet_score.GetScore(Path(p),128)
                 X.append(r)
                 Y.append(y_party)
     get_tweet_score.close()

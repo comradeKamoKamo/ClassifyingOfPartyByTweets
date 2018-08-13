@@ -47,6 +47,7 @@ class GetTweetScore:
                             rtn[rtn_c,i-1] = row[i]
                         except IndexError:
                             print("The number of nouns and verbs is over ",rtn_index)
+                            exit()
                     rtn_c += 1
             return rtn
 
