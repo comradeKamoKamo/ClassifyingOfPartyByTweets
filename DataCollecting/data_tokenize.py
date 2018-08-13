@@ -3,7 +3,7 @@ from janome import tokenizer, tokenfilter ,analyzer
 from pathlib import Path
 
 def main():
-    for csv in Path("DataCollecting/rawdata/").glob("*.csv"):
+   for csv in Path("DataCollecting/rawdata/").glob("*.csv"):
         tokenize_tweets(csv)
 
 def tokenize_tweets(party_csv):
@@ -15,8 +15,7 @@ def tokenize_tweets(party_csv):
                     analyzer.RegexReplaceCharFilter(r"@[a-zA-Z\d]*",""),
                     analyzer.RegexReplaceCharFilter(r"#",""),
                     analyzer.RegexReplaceCharFilter(r"https?:[a-zA-Z\d/\.]*","")]
-    token_filters = [tokenfilter.CompoundNounFilter(),
-                 tokenfilter.POSStopFilter(["記号"]),
+    token_filters = [tokenfilter.POSStopFilter(["記号"]),
                  tokenfilter.LowerCaseFilter()]
     t_analyzer = analyzer.Analyzer(char_filters,t,token_filters)
     
