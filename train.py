@@ -20,12 +20,13 @@ def main():
     X_test , y_test = np_load("Data/test.npz")
     y_test_ = utils.np_utils.to_categorical(y_test,n_classes)
     
+    """
     model = build_model(PART_SIZE)
     model = train(model,X_train,y_train_,X_test,y_test_)
+    """
     
-    """
     model = load_model("model.json","model.hdf5")
-    """
+
     test(model,X_test,y_test)
     
 
@@ -78,7 +79,7 @@ def test(model,X_test,y_test):
     cm = cm.astype("float") / cm.sum(axis=1)[:, np.newaxis]
     fig = plt.figure()
     ax = plt.subplot()
-    cax = ax.matshow(cm, interpolation="nearest", cmap="jet")
+    cax = ax.matshow(cm, interpolation="nearest", cmap="autumn_r")
     fig.colorbar(cax)
     ax.set_xticklabels([""]+parties)
     ax.set_yticklabels([""]+parties)
