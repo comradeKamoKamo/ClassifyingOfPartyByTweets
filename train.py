@@ -20,12 +20,12 @@ def main():
     X_test , y_test = np_load("Data/test.npz")
     y_test_ = utils.np_utils.to_categorical(y_test,n_classes)
     
-    """
+    #"""
     model = build_model(PART_SIZE)
     model = train(model,X_train,y_train_,X_test,y_test_)
-    """
+    #"""
     
-    model = load_model("model.json","model.hdf5")
+    #model = load_model("model.json","model.hdf5")
 
     test(model,X_test,y_test)
     

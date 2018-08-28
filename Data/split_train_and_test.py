@@ -11,7 +11,7 @@ def main():
            train = (f / "train.txt").open("w",encoding="utf-8")
            test = (f / "test.txt").open("w",encoding="utf-8")
            for t in f.glob("*.csv"):
-                if  np.random.rand() > 0.7:
+                if  np.random.rand() > 0.9:
                     msg = "{0}\n".format(str(t))
                     test.write(msg)
                     print("test ->",msg)
