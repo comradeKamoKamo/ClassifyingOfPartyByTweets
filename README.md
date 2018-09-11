@@ -36,12 +36,12 @@
          - 名詞の複合名詞化は正答率が下がったのでやめた。
          - 英単語は小文字に。
  - DataCollecting/data_tokenize.py -> スクリプト
- - CSV->Data/政党名
-     - 遅いので改善の余地あり。SQLite化すべきかも。
+ - DB->Data/政党名
+     - SQLite化した。
 ## 訓練データとテストデータ分割
  - 乱数を用いて、7:3ぐらいに分割する。
      - numpyの乱数の種は19で固定する。
- - Data/政党名/train.txt | test.txt にそれぞれCSVファイルのパスを書き込む。　　
+ - Data/政党名/train.txt | test.txt にそれぞれツイートIDを書き込む。
  - Data/split\_train\_and\_test.py
  - 以降は訓練ツイートのみを扱ってゆく。
 ## ツイートの特徴量化
