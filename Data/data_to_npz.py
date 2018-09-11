@@ -19,7 +19,7 @@ def load_data(mode):
             for l in f.readlines():
                 p = l.replace("\n","")
                 # PART_SIZE = 128
-                r = get_tweet_score.GetScore(Path(p),128)
+                r = get_tweet_score.GetScore(l[:-1],party,128)
                 X.append(r)
                 Y.append(y_party)
     get_tweet_score.close()

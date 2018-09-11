@@ -1,6 +1,7 @@
 import sqlite3,csv
 from pathlib import Path
 import numpy as np
+from contextlib import closing
 
 class GetTweetScore:
 
@@ -10,16 +11,22 @@ class GetTweetScore:
         self.__c_verbs = self.__con_verbs.cursor()
         self.__c_nouns = self.__con_nouns.cursor()
 
-    def GetScore(self,tweet_csv,rtn_index=64):
-        with tweet_csv.open("r",encoding="utf-8") as f:
-            tweet = csv.DictReader(f,["surface",
-                        "part_of_speech",
-                        "part_of_speech2",
-                        "part_of_speech3",
-                        "part_of_speech4",
-                        "base_form",
-                        "infl_type",
-                        "infl_form"])
+    def GetScore(self,tweet_id,its_party,rtn_index=64):
+        with closing(sqlite3.connect("Data/{0}/{0}.db".format(its_party))) as con:
+            c_parts  = con.cursor()
+            sql = "SELECT * FROM Parts WHERE tweet_id = ?"
+            tweet = []
+            for row in c_parts.execute(sql,(tweet_id,)):
+                part = dict()
+                part["surface"] = row[0]
+                part["part_of_speech"] = row[1]
+                part["part_of_speech2"] = row[2]
+                part["part_of_speech3"] = row[3]
+                part["part_of_speech4"] = row[4]
+                part["base_form"] = row[5]
+                part["infl_type"] = row[6]
+                part["infl_form"] = row[7]
+                tweet.append(part)
 
             parties = self.__get_parties()
 

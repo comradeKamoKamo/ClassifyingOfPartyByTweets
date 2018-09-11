@@ -1,5 +1,6 @@
 import sqlite3, csv
 from pathlib import Path
+from contextlib import closing
 
 con_nouns = sqlite3.connect("Data/nouns.db")
 c_nouns = con_nouns.cursor()
@@ -12,7 +13,7 @@ def main():
         if p.is_dir():
             with (p / "train.txt").open("r",encoding="utf-8") as f:
                 for l in f.readlines():
-                    add_tweets(Path(l[:-1]),str(p).replace("Data\\",""))
+                    add_tweets(l[:-1],str(p).replace("Data\\",""))
                     # This line only supports Windows.
 
     con_nouns.commit()
@@ -20,16 +21,23 @@ def main():
     con_nouns.close()
     con_verbs.close()
 
-def add_tweets(tweet_csv,its_party):
-    with tweet_csv.open("r",encoding="utf-8") as f:
-        tweet = csv.DictReader(f,["surface",
-                    "part_of_speech",
-                    "part_of_speech2",
-                    "part_of_speech3",
-                    "part_of_speech4",
-                    "base_form",
-                    "infl_type",
-                    "infl_form"])
+def add_tweets(tweet_id,its_party):
+    with closing(sqlite3.connect("Data/{0}/{0}.db".format(its_party))) as con:
+        c_parts  = con.cursor()
+        sql = "SELECT * FROM Parts WHERE tweet_id = ?"
+        tweet = []
+        for row in c_parts.execute(sql,(tweet_id,)):
+            part = dict()
+            part["surface"] = row[0]
+            part["part_of_speech"] = row[1]
+            part["part_of_speech2"] = row[2]
+            part["part_of_speech3"] = row[3]
+            part["part_of_speech4"] = row[4]
+            part["base_form"] = row[5]
+            part["infl_type"] = row[6]
+            part["infl_form"] = row[7]
+            tweet.append(part)
+
         c = None
         for part in tweet:
             if part["part_of_speech"] == "名詞":
@@ -52,7 +60,6 @@ def add_tweets(tweet_csv,its_party):
                     sql = "UPDATE Counts SET {0} = {1} WHERE key = '{2}'".format(
                         its_party,new_v,base)
                     c.execute(sql)
-
 
 if __name__=="__main__":
     main()
