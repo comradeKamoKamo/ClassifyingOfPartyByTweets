@@ -1,5 +1,6 @@
 import sqlite3, csv
 from pathlib import Path
+from contextlib import closing
 
 def main():
     parties = []
@@ -11,7 +12,7 @@ def main():
     create_empty_db("Data/verbs.db",parties)
 
 def create_empty_db(name,paties):
-    with sqlite3.connect(name) as con:
+    with closing(sqlite3.connect(name)) as con:
         c = con.cursor()
         sql = "CREATE TABLE IF NOT EXISTS Counts (key TEXT primary key"
         for party in paties:
