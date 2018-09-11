@@ -3,6 +3,7 @@ debug/
 debug*.py
 *OAuth.json
 .vscode
+*.db-journal
 
 # my-lib
 GetTweets.py
