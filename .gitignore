@@ -5,6 +5,9 @@ debug*.py
 .vscode
 *.db-journal
 
+# win
+desktop.ini
+
 # my-lib
 GetTweets.py
 
