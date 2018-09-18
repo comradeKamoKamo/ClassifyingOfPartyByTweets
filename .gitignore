@@ -4,6 +4,7 @@ debug*.py
 *OAuth.json
 .vscode
 *.db-journal
+auto.bat
 
 # win
 desktop.ini
