@@ -3,6 +3,7 @@ debug/
 debug*.py
 *OAuth.json
 .vscode
+auto.bat
 *.db-journal
 
 # win
