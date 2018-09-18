@@ -1,4 +1,5 @@
-REM python Data/split_train_and_test.py
+python DataCollecting/data_tokenize.py
+python Data/split_train_and_test.py
 python Data/create_empty_db.py
 python Data/insert_values_to_db.py
 python Data/insert_standard_to_db.py
