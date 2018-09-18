@@ -21,11 +21,11 @@ def main():
     y_test_ = utils.np_utils.to_categorical(y_test,n_classes)
     
     
-    model = build_model(PART_SIZE)
-    model = train(model,X_train,y_train_,X_test,y_test_)
+    #model = build_model(PART_SIZE)
+    #model = train(model,X_train,y_train_,X_test,y_test_)
     
     
-    # model = load_model("model.json","model.hdf5")
+    model = load_model("model.json","model.hdf5")
 
     test(model,X_test,y_test)
     
@@ -77,6 +77,8 @@ def test(model,X_test,y_test):
 
     cm = confusion_matrix(y_test,preds)
     cm = cm.astype("float") / cm.sum(axis=1)[:, np.newaxis]
+    np.save("cm.npy",cm)
+    """
     fig = plt.figure()
     ax = plt.subplot()
     cax = ax.matshow(cm, interpolation="nearest", cmap="autumn_r")
@@ -87,7 +89,7 @@ def test(model,X_test,y_test):
     plt.xlabel("Predicted class")
     plt.ylabel("True class")
     plt.show()
-
+    """
     labels = []
     for i in range(len(parties)):
         labels.append(i)
@@ -95,7 +97,10 @@ def test(model,X_test,y_test):
     preds = label_binarize(preds,classes=labels)
     precision, recall , _ = precision_recall_curve(y_test.ravel(),preds.ravel())
     prc_auc = auc(recall,precision)
+    np.save("precision.npy",precision)
+    np.save("recall.npy",recall)
 
+    """
     plt.figure()
     plt.step(recall, precision, color="b", alpha=0.2,where="post")
     plt.fill_between(recall, precision, step="post", alpha=0.2, color="b")
@@ -103,10 +108,14 @@ def test(model,X_test,y_test):
     plt.ylabel("Precision")
     plt.title("P/R (Micro Average) AUC={0}".format(prc_auc))
     plt.show()
+    """
 
     fpr , tpr , _ = roc_curve(y_test.ravel(),preds.ravel())
     roc_auc = auc(fpr,tpr)
+    np.save("fpr.npy",fpr)
+    np.save("tpr.npy",tpr)
 
+    """
     plt.figure()
     plt.step(fpr, tpr, color="r", alpha=0.2,where="post")
     plt.fill_between(fpr,tpr, step="post", alpha=0.2, color="r")
@@ -115,6 +124,7 @@ def test(model,X_test,y_test):
     plt.plot([0,1],[0,1],linestyle="dashed",color="pink")
     plt.title("ROC (Micro Average) AUC={0}".format(roc_auc))
     plt.show()
+    """
 
     return c_acc , b_acc
  
