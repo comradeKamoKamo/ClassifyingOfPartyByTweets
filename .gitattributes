@@ -1,2 +1,1 @@
 Data/train.npz filter=lfs diff=lfs merge=lfs -text
-Data/test.npz filter=lfs diff=lfs merge=lfs -text
