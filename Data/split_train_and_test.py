@@ -20,8 +20,12 @@ def main():
                 c = con.cursor()
                 sql = "SELECT DISTINCT tweet_id FROM Parts"
                 for row in c.execute(sql):
+                    rand = np.random.rand()
+                    if rand <= 0.5:
+                        #skip
+                        continue
                     t = row[0]
-                    if  np.random.rand() > 0.7:
+                    if  rand > 0.85:
                         msg = "{0}\n".format(str(t))
                         test.write(msg)
                         #print("test ->",msg)
