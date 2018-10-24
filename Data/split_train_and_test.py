@@ -5,7 +5,7 @@ from contextlib import closing
 
 def main():
 
-    np.random.seed(19)
+    np.random.seed(191919)
 
     for f in Path("Data/").glob("*"):
         if f.is_dir():
