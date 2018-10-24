@@ -10,5 +10,5 @@ with open("DataCollecting/Politicians.csv","r") as f:
 
     #実際にはAPIの制限があるので途中で止まる。その場合は続きから。
     for party in parties:
-        get_tweets.get_tweets(party["screen_name"])
+        get_tweets.get_tweets(party["screen_name"],exclude_replies=True,avoid_api_regulation=True)
         get_tweets.save_tweets(Path("DataCollecting/rawdata/" + party["party_name"] + ".csv"))
