@@ -12,6 +12,13 @@ def main():
             #print(f)
             train = (f / "train.txt").open("w",encoding="utf-8")
             test = (f / "test.txt").open("w",encoding="utf-8")
+            meet_exist = list(f.glob("meet.txt"))
+            if len(meet_exist) == 0:
+                continue
+            meet = (f / "meet.txt").open("r",encoding="utf-8")
+            meets = []
+            for line in meet.readlines():
+                meets.append(line[:-1])
             dbs = list(f.glob("*.db"))
             if len(dbs) == 0:
                 continue
@@ -20,19 +27,17 @@ def main():
                 c = con.cursor()
                 sql = "SELECT DISTINCT tweet_id FROM Parts"
                 for row in c.execute(sql):
-                    rand = np.random.rand()
-                    if rand <= 0.5:
-                        #skip
-                        continue
                     t = row[0]
-                    if  rand > 0.85:
-                        msg = "{0}\n".format(str(t))
-                        test.write(msg)
-                        #print("test ->",msg)
-                    else:
-                        msg = "{0}\n".format(str(t))
-                        train.write(msg)
-                        #print("train ->",msg)
+                    for tweet_id in meets:
+                        if t == int(tweet_id):
+                            msg = "{0}\n".format(str(t))
+                            if  np.random.rand() > 0.7:
+                                test.write(msg)
+                                #print("test ->",msg)
+                            else:
+                                train.write(msg)
+                                #print("train ->",msg)
+                            break
             train.close()
             test.close()
             
