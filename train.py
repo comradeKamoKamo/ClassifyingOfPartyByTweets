@@ -66,7 +66,8 @@ def test(model,X_test,y_test):
         if p == y :
             c_acc += 1
     c_acc = c_acc / len(y_test)
-    print("accuacy:",c_acc)
+    with Path("result/accuracy.txt").open("a") as f:
+            f.write(str(c_acc) + "\n")
 
     raw_preds = model.predict(X_test)
     preds = []
