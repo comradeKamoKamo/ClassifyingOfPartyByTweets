@@ -1,5 +1,6 @@
 import numpy as np
 import csv
+import sys
 from keras.models import Sequential
 from keras.layers import Dropout,Dense,Reshape,Flatten
 from keras import utils
@@ -12,7 +13,14 @@ import matplotlib.pyplot as plt
 
 PART_SIZE = 240
 
+
 def main():
+
+    global NUM
+    try:
+        NUM = sys.argv[1]
+    except IndexError:
+        NUM = ""
 
     n_classes = len(get_parties())
     X_train , y_train = np_load("Data/train.npz")
@@ -36,7 +44,7 @@ def train(model,X_train,y_train,X_test,y_test):
             metrics=["accuracy"])
     es_cb = EarlyStopping()
     model.fit(X_train,y_train,validation_data=(X_test,y_test),epochs=30,callbacks=[es_cb])
-    model.save_weights("model.hdf5")
+    model.save_weights("model{0}.hdf5".format(NUM))
     r = model.evaluate(X_test,y_test)
     print(r)
 
@@ -50,7 +58,6 @@ def load_model(model_json_path,model_weights_path):
 
 def test(model,X_test,y_test):
     c_acc = 0
-    b_acc = 0
     n_classes = len(get_parties())
     parties = get_parties()
     for x , y in zip(X_test,y_test):
@@ -58,15 +65,8 @@ def test(model,X_test,y_test):
         p = np.where(r == max(r))[0][0]
         if p == y :
             c_acc += 1
-        if parties[p] == "LDP" or parties[p] == "Komeito":
-            if parties[y] == "LDP" or parties[y] == "Komeito":
-                b_acc+=1
-        else:
-            if not (parties[y] == "LDP" or parties[y] == "Komeito"):
-                b_acc+=1
     c_acc = c_acc / len(y_test)
-    b_acc = b_acc / len(y_test)
-    print(c_acc,b_acc)
+    print("accuacy:",c_acc)
 
     raw_preds = model.predict(X_test)
     preds = []
@@ -77,7 +77,7 @@ def test(model,X_test,y_test):
 
     cm = confusion_matrix(y_test,preds)
     cm = cm.astype("float") / cm.sum(axis=1)[:, np.newaxis]
-    np.save("cm.npy",cm)
+    np.save("result/cm{0}.npy".format(NUM),cm)
     """
     fig = plt.figure()
     ax = plt.subplot()
@@ -90,51 +90,17 @@ def test(model,X_test,y_test):
     plt.ylabel("True class")
     plt.show()
     """
-    labels = []
-    for i in range(len(parties)):
-        labels.append(i)
-    y_test = label_binarize(y_test,classes=labels)
-    preds = label_binarize(preds,classes=labels)
-    precision, recall , _ = precision_recall_curve(y_test.ravel(),preds.ravel())
-    prc_auc = auc(recall,precision)
-    np.save("precision.npy",precision)
-    np.save("recall.npy",recall)
-
-    """
-    plt.figure()
-    plt.step(recall, precision, color="b", alpha=0.2,where="post")
-    plt.fill_between(recall, precision, step="post", alpha=0.2, color="b")
-    plt.xlabel("Recall")
-    plt.ylabel("Precision")
-    plt.title("P/R (Micro Average) AUC={0}".format(prc_auc))
-    plt.show()
-    """
-
-    fpr , tpr , _ = roc_curve(y_test.ravel(),preds.ravel())
-    roc_auc = auc(fpr,tpr)
-    np.save("fpr.npy",fpr)
-    np.save("tpr.npy",tpr)
-
-    """
-    plt.figure()
-    plt.step(fpr, tpr, color="r", alpha=0.2,where="post")
-    plt.fill_between(fpr,tpr, step="post", alpha=0.2, color="r")
-    plt.xlabel("False Positive Rate")
-    plt.ylabel("True Positive Rate")
-    plt.plot([0,1],[0,1],linestyle="dashed",color="pink")
-    plt.title("ROC (Micro Average) AUC={0}".format(roc_auc))
-    plt.show()
-    """
-
-    return c_acc , b_acc
+    return c_acc
  
 def build_model(part_size):
     n_classes = len(get_parties())
     model = Sequential()
     model.add(Flatten(input_shape=(part_size,n_classes)))
-    model.add(Dropout(0.5))
+    model.add(Dense(128, activation="relu"))
+    model.add(Dense(64,activation="relu"))
     model.add(Dense(32,activation="relu"))
-    model.add(Dense(n_classes,activation="softmax"))
+    model.add(Dense(16,activation="relu"))
+    model.add(Dense(n_classes,activation="softmax")) 
     model.summary()
     json_string = model.to_json()
     open("model.json",'w').write(json_string)
