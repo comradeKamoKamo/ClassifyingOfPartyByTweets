@@ -9,8 +9,8 @@ auto.bat
 *.json
 train.txt
 test.txt
-noun.db
-verb.db
+nouns.db
+verbs.db
 *.npz
 
 # win
