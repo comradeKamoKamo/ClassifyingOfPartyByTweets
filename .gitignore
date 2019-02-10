@@ -5,6 +5,13 @@ debug*.py
 .vscode
 auto.bat
 *.db-journal
+*.hdf5
+*.json
+train.txt
+test.txt
+noun.db
+verb.db
+*.npz
 
 # win
 desktop.ini
