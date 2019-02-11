@@ -2,10 +2,10 @@ from pathlib import Path
 import os
 
 # Data
-for f in Path("Data").glob("*.npz"):
+for f in Path("../ClassifyingOfPartyByTweets/Data").glob("*.npz"):
     os.remove(str(f))
 
-for f in Path("Data").glob("*.db"):
+for f in Path("../ClassifyingOfPartyByTweets/Data").glob("*.db"):
     os.remove(str(f))
 
 # 各政党のフォルダ

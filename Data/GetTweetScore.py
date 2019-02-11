@@ -6,13 +6,13 @@ from contextlib import closing
 class GetTweetScore:
 
     def __init__(self):
-        self.__con_verbs = sqlite3.connect("Data/verbs.db")
-        self.__con_nouns = sqlite3.connect("Data/nouns.db")
+        self.__con_verbs = sqlite3.connect("../ClassifyingOfPartyByTweets/Data/verbs.db")
+        self.__con_nouns = sqlite3.connect("../ClassifyingOfPartyByTweets/Data/nouns.db")
         self.__c_verbs = self.__con_verbs.cursor()
         self.__c_nouns = self.__con_nouns.cursor()
 
     def GetScore(self,tweet_id,its_party,rtn_index=64):
-        with closing(sqlite3.connect("Data/{0}/{0}.db".format(its_party))) as con:
+        with closing(sqlite3.connect("../ClassifyingOfPartyByTweets/Data/{0}/{0}.db".format(its_party))) as con:
             c_parts  = con.cursor()
             sql = "SELECT * FROM Parts WHERE tweet_id = ?"
             tweet = []
@@ -61,7 +61,7 @@ class GetTweetScore:
 
     def __get_parties(self):
         parties = []
-        with open("DataCollecting/Politicians.csv","r") as f:
+        with open("../ClassifyingOfPartyByTweets/DataCollecting/Politicians.csv","r") as f:
             data = csv.DictReader(f)
             for row in data:
                 parties.append(row["party_name"])

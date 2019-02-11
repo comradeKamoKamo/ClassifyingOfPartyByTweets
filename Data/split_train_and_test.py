@@ -5,9 +5,7 @@ from contextlib import closing
 
 def main():
 
-    np.random.seed(19)
-
-    for f in Path("Data/").glob("*"):
+    for f in Path("../ClassifyingOfPartyByTweets/Data/").glob("*"):
         if f.is_dir():
             #print(f)
             train = (f / "train.txt").open("w",encoding="utf-8")

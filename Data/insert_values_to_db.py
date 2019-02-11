@@ -2,18 +2,18 @@ import sqlite3, csv
 from pathlib import Path
 from contextlib import closing
 
-con_nouns = sqlite3.connect("Data/nouns.db")
+con_nouns = sqlite3.connect("../ClassifyingOfPartyByTweets/Data/nouns.db")
 c_nouns = con_nouns.cursor()
-con_verbs = sqlite3.connect("Data/verbs.db")
+con_verbs = sqlite3.connect("../ClassifyingOfPartyByTweets/Data/verbs.db")
 c_verbs = con_verbs.cursor()
 
 
 def main():
-    for p in Path("Data/").glob("*"):
-        if p.is_dir():
+    for p in Path("../ClassifyingOfPartyByTweets/Data/").glob("*"):
+        if p.is_dir() and p.name[0:1]!="_":
             with (p / "train.txt").open("r",encoding="utf-8") as f:
                 for l in f.readlines():
-                    add_tweets(l[:-1],str(p).replace("Data\\",""))
+                    add_tweets(l[:-1],p.name)
                     # This line only supports Windows.
 
     con_nouns.commit()
@@ -22,7 +22,7 @@ def main():
     con_verbs.close()
 
 def add_tweets(tweet_id,its_party):
-    with closing(sqlite3.connect("Data/{0}/{0}.db".format(its_party))) as con:
+    with closing(sqlite3.connect("../ClassifyingOfPartyByTweets/Data/{0}/{0}.db".format(its_party))) as con:
         c_parts  = con.cursor()
         sql = "SELECT * FROM Parts WHERE tweet_id = ?"
         tweet = []

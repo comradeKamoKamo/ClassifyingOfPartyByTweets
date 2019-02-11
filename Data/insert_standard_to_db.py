@@ -9,8 +9,8 @@ from contextlib import closing
 #   Z = (X − μ)/σ を求めてDBに記録。
 
 def main():
-    set_standard_to_db("Data/verbs.db")
-    set_standard_to_db("Data/nouns.db")
+    set_standard_to_db("../ClassifyingOfPartyByTweets/Data/verbs.db")
+    set_standard_to_db("../ClassifyingOfPartyByTweets/Data/nouns.db")
     
 def set_standard_to_db(db_name):
     parties = get_parties()
@@ -53,7 +53,7 @@ def set_standard_to_db(db_name):
 
 def get_parties():
     parties = []
-    with open("DataCollecting/Politicians.csv","r") as f:
+    with open("../ClassifyingOfPartyByTweets/DataCollecting/Politicians.csv","r") as f:
         data = csv.DictReader(f)
         for row in data:
             parties.append(row["party_name"])
@@ -62,7 +62,7 @@ def get_parties():
 def get_parties_count(parties):
     counts = OrderedDict()
     for party in parties:
-        with Path("Data/{0}/train.txt".format(party)).open("r",encoding="utf-8") as f:
+        with Path("../ClassifyingOfPartyByTweets/Data/{0}/train.txt".format(party)).open("r",encoding="utf-8") as f:
             counts[party] = len(f.readlines())
     return counts
 

@@ -4,12 +4,12 @@ from contextlib import closing
 
 def main():
     parties = []
-    with open("DataCollecting/Politicians.csv","r") as f:
+    with open("../ClassifyingOfPartyByTweets/DataCollecting/Politicians.csv","r") as f:
         data = csv.DictReader(f)
         for row in data:
             parties.append(row["party_name"])
-    create_empty_db("Data/nouns.db",parties)
-    create_empty_db("Data/verbs.db",parties)
+    create_empty_db("../ClassifyingOfPartyByTweets/Data/nouns.db",parties)
+    create_empty_db("../ClassifyingOfPartyByTweets/Data/verbs.db",parties)
 
 def create_empty_db(name,paties):
     with closing(sqlite3.connect(name)) as con:
