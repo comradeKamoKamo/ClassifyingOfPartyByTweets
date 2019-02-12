@@ -76,7 +76,7 @@ def test(model,X_test,y_test,Z_test):
     pi = 0
     for x , y ,z in zip(X_test,y_test,Z_test):
         r = model.predict(x.reshape(1,PART_SIZE,n_classes))[0]
-        if max(r) > 0.35:
+        if max(r) > 0.4:
             p = np.where(r == max(r))[0][0]
         else:
             with Path("data\\result{0}.pickle".format(NUM)).open("rb") as f:
@@ -85,9 +85,12 @@ def test(model,X_test,y_test,Z_test):
             z_r = result[1]
             z_softmax = result[2]
             for i in range(len(w2v_preds)):
-                if y == z_r[i][0] and str(z[:-1]) == z_r[i][1]:                
-                    p = w2v_preds[i]
-                    preds[pi] = p
+                if y == z_r[i][0] and str(z[:-1]) == z_r[i][1]:       
+                    if z_softmax[i] > max(r):
+                        p = w2v_preds[i]
+                        preds[pi] = p
+                    else:
+                        p = np.where(r == max(r))[0][0]
 
         if p == y :
             c_acc += 1
