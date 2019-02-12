@@ -76,7 +76,7 @@ def test(model,X_test,y_test,Z_test):
     pi = 0
     for x , y ,z in zip(X_test,y_test,Z_test):
         r = model.predict(x.reshape(1,PART_SIZE,n_classes))[0]
-        if max(r) > 0.4:
+        if max(r) > 0.55:
             p = np.where(r == max(r))[0][0]
         else:
             with Path("data\\result{0}.pickle".format(NUM)).open("rb") as f:
