@@ -76,7 +76,7 @@ def test(model,X_test,y_test,Z_test):
     pi = 0
     for x , y ,z in zip(X_test,y_test,Z_test):
         r = model.predict(x.reshape(1,PART_SIZE,n_classes))[0]
-        if max(r) > 0.40:
+        if max(r) > 0.50:
             p = np.where(r == max(r))[0][0]
         else:
             with Path("data\\result{0}.pickle".format(NUM)).open("rb") as f:
@@ -92,7 +92,7 @@ def test(model,X_test,y_test,Z_test):
         if p == y :
             c_acc += 1
         pi+=1
-        
+
     c_acc = c_acc / len(y_test)
     print("acc",c_acc)
     with Path("../ClassifyingOfPartyByTweets/result/accuracy.txt").open("a") as f:
